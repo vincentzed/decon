@@ -62,62 +62,24 @@ $ decon review --stats /tmp/decon-295c0cbd
 
 ### Python
 
-Install via pip:
-
 ```bash
 pip install decontaminate
 ```
 
-Run contamination detection in Python:
-
 ```python
 import decon
 
-# Configure detection
 config = decon.Config(
     training_dir="/path/to/training/data",
     evals_dir="/path/to/eval/references",
     report_output_dir="/path/to/output",
 )
-
-# Run detection (automatically parallelized using all CPU cores)
 report_dir = decon.detect(config)
-print(f"Results written to: {report_dir}")
 ```
 
-<details>
-<summary><strong>Additional Python API</strong></summary>
+> PyPI package is `decontaminate`, import is `import decon`.
 
-```python
-import decon
-
-# Tokenizer utilities
-tokenizer = decon.Tokenizer("cl100k")  # Options: r50k, p50k, cl100k, o200k, uniseg
-tokens = tokenizer.encode("hello world")  # [15339, 1917]
-text = tokenizer.decode(tokens)           # "hello world"
-
-# Text cleaning (normalizes punctuation/whitespace, lowercases)
-cleaned = decon.clean_text("Hello,  World!")  # "hello world"
-
-# All Config options
-config = decon.Config(
-    training_dir="/path/to/training",
-    evals_dir="/path/to/evals",
-    report_output_dir="/path/to/reports",
-    ngram_size=5,                          # N-gram size for matching
-    tokenizer="cl100k",                    # Tokenizer to use
-    contamination_score_threshold=0.8,     # Detection threshold
-    content_key="text",                    # JSON field containing text
-    verbose=False,                         # Enable verbose output
-    purify=False,                          # Create cleaned dataset
-)
-```
-
-📖 **Full API**: See [`crates/decon-py/src/lib.rs`](crates/decon-py/src/lib.rs) for complete function signatures.
-
-📚 **Python Guide**: See [`doc/python.md`](doc/python.md) for detailed examples with CLI equivalents.
-
-</details>
+See [`crates/decon-py/src/lib.rs`](crates/decon-py/src/lib.rs) for all Config parameters and available functions (`detect`, `review`, `compare`, `evals`, `server`, `Tokenizer`, `clean_text`).
 
 ---
 
