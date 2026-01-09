@@ -1,260 +1,34 @@
-# Contamination Detection
+# decontaminate
 
-Decon identifies documents contaminated with eval instances.
+Fast contamination detection for ML training data. Python bindings for [decon](https://github.com/vincentzed/decon).
 
-It uses [simple](doc/simple.md) token based sampling and counting methods, making it suitable for large datasets. It is deterministic with interpretable results.
-
-Decon can produce contamination reports and cleaned datasets.
-
-> **🐍 This fork adds Python bindings** — the core Rust functionality is unchanged. Skip to [Python Quick Start](#python) to get started, or see the [Architecture](#architecture) section to understand how bindings are structured. For the full Python API signature, see [`crates/decon-py/src/lib.rs`](crates/decon-py/src/lib.rs).
-
-## How Decon Works
-
-Consider a 30GB web dataset in `~/sample-data` that includes documents containing evaluation question text.
-
-> TRAINING DOC:
->
->   "...  for θ 30 c i θ i0 4 for θ 90 d i θ is constant for all values of θ **the plane face of plano convex lens of focal**
-> **length 20 cm is silvered this combination is equivalent to the type of mirror and its focal length is** a convex f 20 c
-> m b **concave f** 20 cm in a displacement method using convex lens two images are obtained for a separation of d between ..."
->
->
->EVAL PROMPT: the plane face of plano convex lens of focal length 20 cm is silvered this combination is equivalent to the type of mirror and its focal length is
->
->EVAL ANSWER: concave f 10 cm
-
-We can identify the contamination locations running decon.
-
-```
-$ decon detect --training-dir ~/sample-data --evals-dir ~/references
-
-Training files 4,487/4,487 [00:02:55/00:00:00] [████████████████████████████████████]
-
-┌───────────────────────────────────────────┐
-│     Contamination Detection Results       │
-├───────────────────────────────────────────┤
-│ Training lines                  5,162,084 │
-│ Processing rate                 34 μs/doc │
-├───────────────────────────────────────────┤
-│ Index building time                38.59s │
-│ Detection time                    175.69s │
-│ Total time                        214.28s │
-├───────────────────────────────────────────┤
-│ Contaminated matches                7,699 │
-│ Contaminated documents              1,851 │
-└───────────────────────────────────────────┘
-
-$ decon review --stats /tmp/decon-295c0cbd
-
-=== TRAINING DOCUMENTS CONTAMINATED BY EVAL SUITE ===
-(Each count represents unique training documents that need removal)
-
-  sciq                                  652 │███████████████████████████████████████│
-  mmlu                                  278 │█████████████████████                  │
-  mmlu_pro                              211 │████████████████                       │
-  ai2_arc_easy                           83 │██████                                 │
-  super_gpqa                             65 │████                                   │
-
-  ...
-```
-
-## Quick Start
-
-### Python
-
-Install via pip:
+## Installation
 
 ```bash
 pip install decontaminate
 ```
 
-Run contamination detection in Python:
+## Usage
 
 ```python
 import decon
 
-# Configure detection
 config = decon.Config(
     training_dir="/path/to/training/data",
     evals_dir="/path/to/eval/references",
     report_output_dir="/path/to/output",
 )
-
-# Run detection (automatically parallelized using all CPU cores)
 report_dir = decon.detect(config)
-print(f"Results written to: {report_dir}")
 ```
 
-<details>
-<summary><strong>Additional Python API</strong></summary>
+## API
 
-```python
-import decon
+The Python API is a thin PyO3 wrapper over the Rust implementation. See [`src/lib.rs`](https://github.com/vincentzed/decon/blob/main/crates/decon-py/src/lib.rs) for all `Config` parameters and available functions:
 
-# Tokenizer utilities
-tokenizer = decon.Tokenizer("cl100k")  # Options: r50k, p50k, cl100k, o200k, uniseg
-tokens = tokenizer.encode("hello world")  # [15339, 1917]
-text = tokenizer.decode(tokens)           # "hello world"
+- `detect()`, `review()`, `compare()`, `evals()`, `server()`
+- `Tokenizer` (encode/decode with cl100k, o200k, etc.)
+- `clean_text()` (text normalization)
 
-# Text cleaning (normalizes punctuation/whitespace, lowercases)
-cleaned = decon.clean_text("Hello,  World!")  # "hello world"
+## Documentation
 
-# All Config options
-config = decon.Config(
-    training_dir="/path/to/training",
-    evals_dir="/path/to/evals",
-    report_output_dir="/path/to/reports",
-    ngram_size=5,                          # N-gram size for matching
-    tokenizer="cl100k",                    # Tokenizer to use
-    contamination_score_threshold=0.8,     # Detection threshold
-    content_key="text",                    # JSON field containing text
-    verbose=False,                         # Enable verbose output
-    purify=False,                          # Create cleaned dataset
-)
-```
-
-📖 **Full API**: See [`crates/decon-py/src/lib.rs`](crates/decon-py/src/lib.rs) for complete function signatures.
-
-📚 **Python Guide**: See [`doc/python.md`](doc/python.md) for detailed examples with CLI equivalents.
-
-</details>
-
----
-
-### CLI (Rust)
-
-```bash
-# Clone and build. Requires rust 1.88
-git clone https://github.com/allenai/decon
-cd decon
-
-# For full set of commands and options, help is available.
-cargo run --release -- --help
-
-# List current eval datasets in reference (small default set initially).
-cargo run --release -- evals
-
-# Run contamination detection.
-cargo run --release -- detect --training-dir tests/fixtures/training/
-
-# Create a clean copy (contaminated documents removed) of your dataset.
-cargo run --release -- detect --training-dir tests/fixtures/training/ --purify
-
-# Review report output. A decon detect run will report an output directory.
-cargo run --release -- review /tmp/decon-output-directory
-```
-
-Sensible defaults are provided for [decon parameters](config/default.yaml), with a single `contamination_score_threshold` that can be adjusted to desired sensitivity. Experimenting with these parameters on your own dataset and eval reference set is recommended.
-
-## Advanced Usage
-
-### Preparing Datasets
-
-#### Training Documents
-
-Decon operates on a directory containing jsonl files.
-
-Each JSON object in the files must contain a field with a string value representing a training document [[example]](tests/fixtures/training/contaminated_mixed.jsonl).
-
-#### Eval Suites
-
-Decon runs against a reference set of eval suites that is also expected be a directory containing jsonl files [[example](bundled-evals/)].
-
-Decon eval reference files have a normalized format including passage, question, answer keys as well as metadata for reporting. Decon includes tooling to generate reference files from hf datasets.
-
-#### Eval Reference Set Curation
-
-Three eval suites are included in the eval reference dataset by default, gsm8k, mmlu, and agi_eval.
-
-It's likely you will want to build your own reference set with your evals of interest.
-
-The `decon evals` command can process an extensible [declarative yaml file](config/evals.yaml) to normalize huggingface datasets.
-
-To download all the pre-configured evals included in the configuration file, run the following command. This requires python3 with the datasets library installed.
-
-```
-# Review current set of evals in reference
-cargo run --release -- evals
-
-# Download and normalize all evals configured in a config file
-cargo run --release -- evals --download --config config/evals.yaml
-```
-
-See the [Evaluation Dataset Guide](doc/eval-datasets.md) for more information on preparing evaluation datasets.
-
-### Server
-
-Decon can also be run as a server to facilitate distributing workloads.
-
-```bash
-# Launch a server
-decon server --port 8080
-```
-
-An example orchestration script is provided which demonstrates one approach to batch retrieve a partition of documents, submit documents to the server, poll for job status, and upload reports and clean documents to a new location.
-
-See [deployment guide](doc/deployment.md) for details.
-
-### Reviewing Results
-
-Decon includes tools for qualitative review and basic stats which can be filtered to analyze contamination.
-
-```bash
-# To qualitatively review individual matches
-cargo run --release -- review /my-results-directory
-
-# To see statistics
-cargo run --release -- review --stats /my-results-directory
-
-# To review with filters, e.g. specific eval with minimum score
-cargo run --release -- review /my-results-directory --eval mmlu --min-score 0.9
-
-# Compare results between different decontamination runs
-cargo run --release -- compare /tmp/results-a /tmp/results-b
-```
-
-Decon reports are jsonl files which are ready for analysis beyond the provided tooling.
-
-## Architecture
-
-This fork restructures decon as a Rust workspace with three crates:
-
-| Crate | Source | Description |
-|-------|--------|-------------|
-| **decon-core** | [`crates/decon-core/`](crates/decon-core/) | Core detection engine — pure Rust library (unchanged from upstream) |
-| **decon-cli** | [`crates/decon-cli/`](crates/decon-cli/) | Command-line interface built on decon-core |
-| **decon-py** | [`crates/decon-py/`](crates/decon-py/) | Python bindings via [PyO3](https://pyo3.rs/) |
-
-### How Python Bindings Work
-
-The Python bindings are a _thin wrapper_ around decon-core — no detection logic is reimplemented in Python. Key files:
-
-| File | Purpose |
-|------|---------|
-| [`crates/decon-py/src/lib.rs`](crates/decon-py/src/lib.rs) | PyO3 wrapper classes (`PyConfig`, `PyTokenizer`) and functions (`detect`, `clean_text`) |
-| [`crates/decon-py/python/decon/__init__.py`](crates/decon-py/python/decon/__init__.py) | Python module re-exports |
-| [`crates/decon-py/tests/test_parity.py`](crates/decon-py/tests/test_parity.py) | Parity tests ensuring Python ↔ Rust equivalence |
-
-The `detect()` function releases the GIL via `py.allow_threads()`, enabling full utilization of Rayon's parallel processing on all CPU cores.
-
-### Building from Source
-
-**Rust CLI:**
-```bash
-cargo build --release
-# Binary at: target/release/decon
-```
-
-**Python bindings (requires [maturin](https://www.maturin.rs/)):**
-```bash
-cd crates/decon-py
-maturin develop --release
-# Or build wheels: maturin build --release
-```
-
-📦 **Detailed guide**: See [`doc/building.md`](doc/building.md) for cross-platform builds, troubleshooting, and CI/CD.
-
-### Requirements
-
-- **Rust**: 1.88+ (edition 2024)
-- **Python**: 3.12+ (for bindings)
+Full documentation: https://github.com/vincentzed/decon
