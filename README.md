@@ -252,6 +252,8 @@ maturin develop --release
 # Or build wheels: maturin build --release
 ```
 
+📦 **Detailed guide**: See [`doc/building.md`](doc/building.md) for cross-platform builds, troubleshooting, and CI/CD.
+
 ### Requirements
 
 - **Rust**: 1.88+ (edition 2024)
