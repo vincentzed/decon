@@ -6,6 +6,8 @@ It uses [simple](doc/simple.md) token based sampling and counting methods, makin
 
 Decon can produce contamination reports and cleaned datasets.
 
+> **🐍 This fork adds Python bindings** — the core Rust functionality is unchanged. Skip to [Python Quick Start](#python) to get started, or see the [Architecture](#architecture) section to understand how bindings are structured. For the full Python API signature, see [`crates/decon-py/src/lib.rs`](crates/decon-py/src/lib.rs).
+
 ## How Decon Works
 
 Consider a 30GB web dataset in `~/sample-data` that includes documents containing evaluation question text.
@@ -58,7 +60,68 @@ $ decon review --stats /tmp/decon-295c0cbd
 
 ## Quick Start
 
-### CLI
+### Python
+
+Install via pip:
+
+```bash
+pip install decon
+```
+
+Run contamination detection in Python:
+
+```python
+import decon
+
+# Configure detection
+config = decon.Config(
+    training_dir="/path/to/training/data",
+    evals_dir="/path/to/eval/references",
+    report_output_dir="/path/to/output",
+)
+
+# Run detection (automatically parallelized using all CPU cores)
+report_dir = decon.detect(config)
+print(f"Results written to: {report_dir}")
+```
+
+<details>
+<summary><strong>Additional Python API</strong></summary>
+
+```python
+import decon
+
+# Tokenizer utilities
+tokenizer = decon.Tokenizer("cl100k")  # Options: r50k, p50k, cl100k, o200k, uniseg
+tokens = tokenizer.encode("hello world")  # [15339, 1917]
+text = tokenizer.decode(tokens)           # "hello world"
+
+# Text cleaning (normalizes punctuation/whitespace, lowercases)
+cleaned = decon.clean_text("Hello,  World!")  # "hello world"
+
+# All Config options
+config = decon.Config(
+    training_dir="/path/to/training",
+    evals_dir="/path/to/evals",
+    report_output_dir="/path/to/reports",
+    ngram_size=5,                          # N-gram size for matching
+    tokenizer="cl100k",                    # Tokenizer to use
+    contamination_score_threshold=0.8,     # Detection threshold
+    content_key="text",                    # JSON field containing text
+    verbose=False,                         # Enable verbose output
+    purify=False,                          # Create cleaned dataset
+)
+```
+
+📖 **Full API**: See [`crates/decon-py/src/lib.rs`](crates/decon-py/src/lib.rs) for complete function signatures.
+
+📚 **Python Guide**: See [`doc/python.md`](doc/python.md) for detailed examples with CLI equivalents.
+
+</details>
+
+---
+
+### CLI (Rust)
 
 ```bash
 # Clone and build. Requires rust 1.88
@@ -151,3 +214,45 @@ cargo run --release -- compare /tmp/results-a /tmp/results-b
 ```
 
 Decon reports are jsonl files which are ready for analysis beyond the provided tooling.
+
+## Architecture
+
+This fork restructures decon as a Rust workspace with three crates:
+
+| Crate | Source | Description |
+|-------|--------|-------------|
+| **decon-core** | [`crates/decon-core/`](crates/decon-core/) | Core detection engine — pure Rust library (unchanged from upstream) |
+| **decon-cli** | [`crates/decon-cli/`](crates/decon-cli/) | Command-line interface built on decon-core |
+| **decon-py** | [`crates/decon-py/`](crates/decon-py/) | Python bindings via [PyO3](https://pyo3.rs/) |
+
+### How Python Bindings Work
+
+The Python bindings are a _thin wrapper_ around decon-core — no detection logic is reimplemented in Python. Key files:
+
+| File | Purpose |
+|------|---------|
+| [`crates/decon-py/src/lib.rs`](crates/decon-py/src/lib.rs) | PyO3 wrapper classes (`PyConfig`, `PyTokenizer`) and functions (`detect`, `clean_text`) |
+| [`crates/decon-py/python/decon/__init__.py`](crates/decon-py/python/decon/__init__.py) | Python module re-exports |
+| [`crates/decon-py/tests/test_parity.py`](crates/decon-py/tests/test_parity.py) | Parity tests ensuring Python ↔ Rust equivalence |
+
+The `detect()` function releases the GIL via `py.allow_threads()`, enabling full utilization of Rayon's parallel processing on all CPU cores.
+
+### Building from Source
+
+**Rust CLI:**
+```bash
+cargo build --release
+# Binary at: target/release/decon
+```
+
+**Python bindings (requires [maturin](https://www.maturin.rs/)):**
+```bash
+cd crates/decon-py
+maturin develop --release
+# Or build wheels: maturin build --release
+```
+
+### Requirements
+
+- **Rust**: 1.88+ (edition 2024)
+- **Python**: 3.12+ (for bindings)
