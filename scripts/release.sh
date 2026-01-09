@@ -42,11 +42,13 @@ fi
 read -p "Create release $TAG? [Y/n] " prompt
 
 if [[ $prompt == "y" || $prompt == "Y" || $prompt == "yes" || $prompt == "Yes" || $prompt == "" ]]; then
-    # Commit any staged changes
-    if [[ -n $(git status --porcelain) ]]; then
-        git add -A
-        git commit -m "Bump version to $VERSION for release" || true
-    fi
+    # Update CHANGELOG with new version section
+    echo "📝 Updating CHANGELOG..."
+    python scripts/prepare_changelog.py
+    
+    # Commit changes
+    git add -A
+    git commit -m "Bump version to $TAG for release" || true
     
     # Push to main
     echo "📤 Pushing to main..."
