@@ -30,8 +30,14 @@ from decon._decon import (
     Config,
     Tokenizer,
     detect,
+    contamination_detect,
     clean_text,
     default_config,
+    read_config,
+    evals,
+    review,
+    compare,
+    server,
     __version__,
 )
 
@@ -39,7 +45,13 @@ __all__ = [
     "Config",
     "Tokenizer",
     "detect",
+    "contamination_detect",
     "clean_text",
     "default_config",
+    "read_config",
+    "evals",
+    "review",
+    "compare",
+    "server",
     "__version__",
 ]
