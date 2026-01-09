@@ -6,7 +6,9 @@ It uses [simple](doc/simple.md) token based sampling and counting methods, makin
 
 Decon can produce contamination reports and cleaned datasets.
 
+> [!NOTE]
 > **🐍 This fork adds Python bindings** — the core Rust functionality is unchanged. Skip to [Python Quick Start](#python) to get started, or see the [Architecture](#architecture) section to understand how bindings are structured. For the full Python API signature, see [`crates/decon-py/src/lib.rs`](crates/decon-py/src/lib.rs).
+> The goal of this fork is to simply expose the API transparently for python users
 
 ## How Decon Works
 
