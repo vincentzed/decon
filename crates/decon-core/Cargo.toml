@@ -1,0 +1,38 @@
+[package]
+name = "decon-core"
+description = "Core contamination detection library for text training data"
+categories = ["text-processing", "data-structures"]
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+anyhow.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+serde_yaml.workspace = true
+zstd.workspace = true
+flate2.workspace = true
+bzip2.workspace = true
+xz2.workspace = true
+tiktoken-rs.workspace = true
+regex.workspace = true
+dashmap.workspace = true
+rayon.workspace = true
+unicode-segmentation.workspace = true
+mj_io.workspace = true
+indicatif.workspace = true
+thread_local.workspace = true
+dirs.workspace = true
+tokio.workspace = true
+axum.workspace = true
+uuid.workspace = true
+clap.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true
+
+[lib]
+name = "decon_core"

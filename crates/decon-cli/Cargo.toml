@@ -1,0 +1,18 @@
+[package]
+name = "decon"
+description = "CLI for contamination detection in training data"
+categories = ["command-line-utilities"]
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[[bin]]
+name = "decon"
+path = "src/main.rs"
+
+[dependencies]
+decon-core = { path = "../decon-core" }
+anyhow.workspace = true
+clap.workspace = true

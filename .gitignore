@@ -1,7 +1,10 @@
 *.ipynb
 *.pyc
+*.so
+__pycache__/
 tests/output
 target/
 .swp
 .envrc
 .claude
+.venv/

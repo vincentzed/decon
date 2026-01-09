@@ -1,0 +1,42 @@
+[build-system]
+requires = ["maturin>=1.4,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "decon"
+version = "0.3.0"
+description = "Fast contamination detection for ML training data"
+readme = "../../README.md"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.12"
+keywords = ["machine-learning", "contamination", "detection", "llm", "evaluation"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Rust",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+[project.urls]
+Homepage = "https://github.com/allenai/decon"
+Repository = "https://github.com/allenai/decon"
+Documentation = "https://github.com/allenai/decon#readme"
+
+[tool.maturin]
+python-source = "python"
+module-name = "decon._decon"
+strip = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]

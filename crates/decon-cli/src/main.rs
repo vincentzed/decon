@@ -2,12 +2,11 @@
 use anyhow::{Error, Result};
 use clap::{Parser, Subcommand};
 
-// Import from library crate
-use decon::{
-    compare, detect, evals, review, server,
-    execute_compare, execute_detect, execute_evals, execute_review, execute_server,
+// Import from core library crate
+use decon_core::{
+    compare, detect, evals, execute_compare, execute_detect, execute_evals, execute_review,
+    execute_server, review, server,
 };
-
 
 #[derive(Parser)]
 #[clap(
@@ -37,7 +36,6 @@ enum Commands {
 fn main() -> Result<(), Error> {
     let args = ArgParser::parse();
 
-    
     match &args.command {
         Commands::Detect(args) => execute_detect(args),
 
