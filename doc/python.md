@@ -7,8 +7,10 @@ This document shows how to use decon from Python. Each example includes the equi
 ## Installation
 
 ```bash
-pip install decon
+pip install decontaminate
 ```
+
+> **Note**: The package is named `decontaminate` on PyPI, but the import is `import decon`.
 
 Or build from source:
 

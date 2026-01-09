@@ -84,13 +84,13 @@ cd crates/decon-py
 # Build wheel for current platform
 maturin build --release
 
-# Output: target/wheels/decon-0.3.0-cp312-cp312-*.whl
+# Output: target/wheels/decontaminate-0.3.0-cp312-cp312-*.whl
 ```
 
 ### Install from Wheel
 
 ```bash
-pip install target/wheels/decon-0.3.0-cp312-cp312-*.whl
+pip install target/wheels/decontaminate-0.3.0-cp312-cp312-*.whl
 ```
 
 ---

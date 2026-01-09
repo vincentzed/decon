@@ -3,17 +3,28 @@ requires = ["maturin>=1.4,<2.0"]
 build-backend = "maturin"
 
 [project]
-name = "decon"
+name = "decontaminate"
 version = "0.3.0"
-description = "Fast contamination detection for ML training data"
+description = "Fast contamination detection for ML training data - Python bindings for decon"
 readme = "../../README.md"
-license = { text = "Apache-2.0" }
+license = "Apache-2.0"
+license-files = ["../../LICENSE"]
 requires-python = ">=3.12"
-keywords = ["machine-learning", "contamination", "detection", "llm", "evaluation"]
+authors = [
+    { name = "Allen Institute for AI", email = "decon@allenai.org" },
+]
+maintainers = [
+    { name = "Vincent Zed" },
+]
+keywords = ["machine-learning", "contamination", "detection", "llm", "evaluation", "decontamination", "benchmark", "data-quality"]
 classifiers = [
     "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Rust",
     "License :: OSI Approved :: Apache Software License",
@@ -21,12 +32,16 @@ classifiers = [
     "Operating System :: MacOS",
     "Operating System :: Microsoft :: Windows",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
 ]
 
 [project.urls]
 Homepage = "https://github.com/allenai/decon"
-Repository = "https://github.com/allenai/decon"
-Documentation = "https://github.com/allenai/decon#readme"
+Repository = "https://github.com/vincentzed/decon"
+Documentation = "https://github.com/vincentzed/decon/blob/main/doc/python.md"
+Issues = "https://github.com/vincentzed/decon/issues"
+Changelog = "https://github.com/vincentzed/decon/releases"
 
 [tool.maturin]
 python-source = "python"

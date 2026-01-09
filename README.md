@@ -65,7 +65,7 @@ $ decon review --stats /tmp/decon-295c0cbd
 Install via pip:
 
 ```bash
-pip install decon
+pip install decontaminate
 ```
 
 Run contamination detection in Python:
