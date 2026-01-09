@@ -4,7 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "decontaminate"
-version = "0.3.0.post3"
+version = "0.3.0.post4"
 description = "Fast contamination detection for ML training data - Python bindings for decon"
 readme = "README.md"
 license = "Apache-2.0"

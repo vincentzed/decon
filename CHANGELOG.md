@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Released
 
-## [v0.3.0.post3](https://github.com/vincentzed/decon/releases/tag/v0.3.0.post3) - 2026-01-09
+## [v0.3.0.post4](https://github.com/vincentzed/decon/releases/tag/v0.3.0.post4) - 2026-01-09
 
 ### Added
 
