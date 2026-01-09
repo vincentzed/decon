@@ -17,3 +17,4 @@ crate-type = ["cdylib"]
 decon-core = { path = "../decon-core" }
 pyo3.workspace = true
 rayon.workspace = true
+tokio.workspace = true

@@ -413,6 +413,7 @@ dependencies = [
  "decon-core",
  "pyo3",
  "rayon",
+ "tokio",
 ]
 
 [[package]]

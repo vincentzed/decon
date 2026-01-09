@@ -5,11 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## Released
 
-## [v0.3.0.post2](https://github.com/vincentzed/decon/releases/tag/v0.3.0.post2) - 2026-01-09
-
-## [v0.3.0.post1](https://github.com/vincentzed/decon/releases/tag/v0.3.0.post1) - 2026-01-09
+## [v0.3.0.post3](https://github.com/vincentzed/decon/releases/tag/v0.3.0.post3) - 2026-01-09
 
 ### Added
 
@@ -20,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 ## [v0.3.0](https://github.com/vincentzed/decon/releases/tag/v0.3.0) - 2025-01-09
+(Do not use, unstable release.)
 
 ### Added
 

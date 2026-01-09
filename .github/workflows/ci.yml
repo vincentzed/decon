@@ -65,7 +65,7 @@ jobs:
 
     - name: Install wheel and test dependencies
       run: |
-        pip install target/wheels/decon-*.whl pytest
+        pip install target/wheels/*.whl pytest
 
     - name: Test import
       run: |

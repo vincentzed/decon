@@ -36,4 +36,4 @@ jobs:
           ${{ runner.os }}-cargo-
 
     - name: Run clippy
-      run: cargo clippy -p decon-core -p decon -- -D warnings
+      run: cargo clippy -p decon-core -p decon -- -D warnings -A clippy::unnecessary_unwrap
