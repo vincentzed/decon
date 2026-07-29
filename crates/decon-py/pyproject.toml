@@ -50,7 +50,8 @@ classifiers = [
 ]
 
 [project.urls]
-    Homepage = "https://github.com/allenai/decon"
+Homepage = "https://vincentzed.com"
+Upstream = "https://github.com/allenai/decon"
 Repository = "https://github.com/vincentzed/decon"
 Documentation = "https://github.com/vincentzed/decon/blob/main/doc/python.md"
 Issues = "https://github.com/vincentzed/decon/issues"
